@@ -214,26 +214,65 @@ async function getUser(req, res) {
   }
 }
 
+// async function updateUser(req, res) {
+//   try {
+//     const updatedUserData = await myuser.findOneAndUpdate(
+//       { email: req.body.email },
+//       {
+//         providedServices: req.body.providedServices,
+//         username: req.body.username,
+
+//         email: req.body.email,
+//       },
+//       { new: true }
+//     );
+//     console.log(req.body, updatedUserData);
+//     console.log("hiiiiiiii", req.body.providedServices);
+//     res.json(updatedUserData);
+//   } catch (err) {
+//     console.log("catch", req.body.providedServices);
+
+//     console.log(err);
+//     res.status(500).json({ error: "Internal server error" });
+//   }
+// }
+
 async function updateUser(req, res) {
+  const { email, servId } = req.body;
+  console.log(email, servId);
   try {
-    const updatedUserData = await myuser.findOneAndUpdate(
-      { email: req.body.email },
-      {
-        providedServices: req.body.providedServices,
-        username: req.body.username,
+    // Find user by email
+    const user = await myuser.findOne({ email });
+    console.log(user);
 
-        email: req.body.email,
-      },
-      { new: true }
-    );
-    console.log(req.body, updatedUserData);
-    console.log("hiiiiiiii", req.body.providedServices);
-    res.json(updatedUserData);
-  } catch (err) {
-    console.log("catch", req.body.providedServices);
+    if (!user) {
+      console.log("user not found");
 
-    console.log(err);
-    res.status(500).json({ error: "Internal server error" });
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // console.log("i am here 1");
+
+    // Add servId to providedServices array (if not already present)
+    if (!user.providedServices.includes(servId)) {
+      // console.log("i am here 2");
+
+      user.providedServices.push(servId);
+      console.log(user.providedServices);
+    }
+    // console.log("i am here 3");
+
+    // Save updated user document
+    await user.save();
+    // console.log("i am here 5");
+
+    // Respond with updated user document (optional)
+    res.json(user);
+  } catch (error) {
+    console.log("i err");
+
+    console.error("Error updating provided services:", error);
+    res.status(500).json({ error: "Server error" });
   }
 }
 
