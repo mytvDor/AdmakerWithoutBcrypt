@@ -276,10 +276,41 @@ async function updateUser(req, res) {
   }
 }
 
+async function updateUserdelete(req, res) {
+  const { email, servId } = req.body;
+  console.log(email, servId);
+  try {
+    // Find user by email
+    const user = await myuser.findOne({ email });
+    console.log(user);
+
+    if (!user) {
+      console.log("User not found");
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Remove servId from providedServices array (if present)
+    console.log("test 1");
+
+    user.providedServices = user.providedServices.filter((id) => id !== servId);
+
+    // Save updated user document
+    await user.save();
+    console.log("test 2 done");
+
+    // Respond with updated user document (optional)
+    res.json(user);
+  } catch (error) {
+    console.error("Error updating provided services:", error);
+    res.status(500).json({ error: "Server error" });
+  }
+}
+
 module.exports = {
   signuproute,
   loginroute,
   protectedroute,
   getUser,
   updateUser,
+  updateUserdelete,
 };
