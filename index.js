@@ -51,7 +51,7 @@ app.get("/protected", user.protectedroute);
 
 app.post("/getUser", user.getUser);
 
-app.patch("/updateUser", user.updateUser);
+app.put("/updateUser", user.updateUser);
 
 //product
 
