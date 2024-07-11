@@ -53,6 +53,8 @@ app.post("/getUser", user.getUser);
 
 app.put("/updateUser", user.updateUser);
 
+app.put("/updateUserdelete", user.updateUserdelete);
+
 //product
 
 app.post("/uploadProduct", product.uploadProduct);
